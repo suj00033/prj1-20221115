@@ -24,6 +24,24 @@ public class MemberController {
 	@Autowired
 	private MemberService service;
 	
+	// 닉네임 중복 확인
+	@PostMapping("existNickName")
+	@ResponseBody
+	public Map<String, Object> existNickName(@RequestBody Map<String, String> req) {
+		Map<String, Object> map = new HashMap<>();
+		
+		MemberDto member = service.getByNickName(req.get("nickName"));
+		
+		if (member == null) {
+			map.put("status", "not exist");
+			map.put("message", "사용가능한 닉네임입니다.");
+		} else {
+			map.put("status", "exist");
+			map.put("message", "이미 존재하는 닉네임입니다.");
+		}
+		return map;
+	}
+	
 	// 이메일 중복 확인
 	@PostMapping("existEmail")
 	@ResponseBody
@@ -94,11 +112,11 @@ public class MemberController {
 		// 회원 정보 수정 시 전 암호를 입력하여 수정하기
 		MemberDto oldMember = service.getById(member.getId());
 		
-		// 기존 암호가 일치할시에 회원 정보 수정하고
+		rttr.addAttribute("id", member.getId());
 		if (oldMember.getPassword().equals(oldPassword)) {
+			// 기존 암호가 맞으면 회원 정보 수정
 			int cnt = service.modify(member);
-			
-			rttr.addAttribute("id", member.getId());
+
 			if (cnt == 1) {
 				rttr.addFlashAttribute("message", "회원 정보가 수정되었습니다.");
 				return "redirect:/member/info";
@@ -106,12 +124,11 @@ public class MemberController {
 				rttr.addFlashAttribute("message", "회원 정보가 수정되지 않았습니다.");
 				return "redirect:/member/modify";
 			}
-			// 일치하지않으면 변경되지않고 다시 modify로 되돌아옴
 		} else {
 			rttr.addFlashAttribute("message", "암호가 일치하지 않습니다.");
+			return "redirect:/member/modify";
 		}
-		
-		return "redirect:/member/modify";
+
 	}
 	
 	@PostMapping("remove")

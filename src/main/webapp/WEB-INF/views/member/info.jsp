@@ -39,6 +39,13 @@
 					</label>				
 					<input class="form-control" type="text" value="${member.id }" readonly> 
 				</div>
+
+				<div class="mb-3">
+					<label for="" class="form-label">
+						닉네임
+					</label>				
+					<input class="form-control" type="text" value="${member.nickName }" readonly> 
+				</div>
 				
 				<div class="mb-3">
 					<label for="" class="form-label">
