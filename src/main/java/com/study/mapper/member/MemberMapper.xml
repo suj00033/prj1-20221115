@@ -42,7 +42,7 @@
 	UPDATE Member
 	SET
 		nickName = #{nickName},
-		<if test="newPassword == true">
+		<if test="password != null">
 		password = #{password},
 		</if>
 		email = #{email}

@@ -11,7 +11,5 @@ public class MemberDto {
 	private String email;
 	private String password;
 	
-	private boolean newPassword;
-	
 	private LocalDateTime inserted;
 }
