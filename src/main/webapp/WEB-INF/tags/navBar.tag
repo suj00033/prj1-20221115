@@ -13,6 +13,8 @@
 <c:url value="/board/register" var="registerLink" />
 <c:url value="/member/signup" var="signupLink" />
 <c:url value="/member/list" var="memberListLink" />
+<c:url value="/member/login" var="loginLink"></c:url>
+<c:url value="/member/logout" var="logoutLink"></c:url>
 
 <nav class="navbar navbar-expand-md bg-light mb-3">
   <div class="container-md">
@@ -35,6 +37,14 @@
         
         <li class="nav-item">
           <a class="nav-link ${active eq 'signup' ? 'active' : '' }" href="${signupLink }">회원가입</a>
+        </li>
+        
+        <li class="nav-item">
+          <a href="${loginLink }" class="nav-link">로그인</a>
+        </li>
+        
+        <li class="nav-item">
+          <a href="${logoutLink }" class="nav-link">로그아웃</a>
         </li>
         
       </ul>

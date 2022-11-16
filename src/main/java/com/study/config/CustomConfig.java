@@ -52,6 +52,9 @@ public class CustomConfig {
 	public SecurityFilterChain securityFileterChain(HttpSecurity http) throws Exception {
 		// 로그인 페이지 만들기
 		http.formLogin().loginPage("/member/login");
+		// 멤버 로그아웃                       
+		http.logout().logoutUrl("/member/logout");
+		// .logoutSuccessUrl("/board/list");를 붙이면 로그아웃 이후에는 게시판 목록으로 가겠다
 		http.csrf().disable();
 			
 		return http.build();
