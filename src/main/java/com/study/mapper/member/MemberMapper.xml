@@ -5,9 +5,8 @@
   
 <mapper namespace="com.study.mapper.member.MemberMapper">
 
-	<!-- nickName 중복확인 -->
 	<select id="selectByNickName" resultType="com.study.domain.member.MemberDto">
-	SELECT
+	SELECT 
 		id,
 		nickName,
 		password,
@@ -18,8 +17,7 @@
 	WHERE
 		nickName = #{nickName}
 	</select>
-	
-	<!-- email 중복확인 -->
+
 	<select id="selectByEmail" resultType="com.study.domain.member.MemberDto">
 	SELECT 
 		id,
@@ -39,12 +37,16 @@
 	</delete>
 
 	<update id="update">
-	UPDATE Board
+	UPDATE Member
 	SET
-		title = #{title},
-		content = #{content}
+		<if test="password != null">
+		password = #{password},
+		</if>
+		nickName = #{nickName},
+		email = #{email}
 	WHERE
 		id = #{id}
+	
 	</update>
 
 	<select id="selectById" resultType="com.study.domain.member.MemberDto">

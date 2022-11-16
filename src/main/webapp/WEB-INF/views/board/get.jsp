@@ -27,12 +27,14 @@
 						<c:param name="id" value="${board.id }"></c:param>
 					</c:url>
 					
-					<sec:authorize access="isAuthenticated()">
+					<sec:authentication property="name" var="username" />
+					
+					<%-- 작성자와 authentication.name 같으면 보여줌 --%>
+					<c:if test="${board.writer == username}">
 						<a class="btn btn-warning" href="${modifyLink }">
 							<i class="fa-solid fa-pen-to-square"></i>
 						</a>
-					</sec:authorize>
-					
+					</c:if>		
 					
 				</h1>
 			
@@ -155,7 +157,7 @@
 	        <h1 class="modal-title fs-5">댓글 수정 양식</h1>
 	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 	      </div>
-	      <div class="modal-body"> <%-- class="form-control" 길게 --%>
+	      <div class="modal-body">
 	        <input type="text" class="form-control" id="modifyReplyInput">
 	      </div>
 	      <div class="modal-footer">
@@ -172,17 +174,14 @@ const ctx = "${pageContext.request.contextPath}";
 
 listReply();
 
-// 댓글 toast 자바스크립트
+// 댓글 crud 메시지 토스트
 const toast = new bootstrap.Toast(document.querySelector("#replyMessageToast"));
 
-// 댓글 수정 폼 모달
 document.querySelector("#modifyFormModalSubmitButton").addEventListener("click", function() {
 	const content = document.querySelector("#modifyReplyInput").value;
-	// dataset.replyId에서 꺼내 씀
 	const id = this.dataset.replyId;
 	const data = {id, content};
 	
-	// 댓글 수정되는 시점
 	fetch(`\${ctx}/reply/modify`, {
 		method : "put",
 		headers : {
@@ -193,18 +192,15 @@ document.querySelector("#modifyFormModalSubmitButton").addEventListener("click",
 	.then(res => res.json())
 	.then(data => {
 		document.querySelector("#replyMessage1").innerText = data.message;
-		toast.show(); // 업데이트 하고 나서 보여주는 토스트
+		toast.show();
 	})
-	.then(() => listReply()); // 댓글 수정하고 수정완료 되었다는 메세지 띄우기
+	.then(() => listReply());
 });
 
-
-// 댓글 삭제 모달확인버튼
 document.querySelector("#removeConfirmModalSubmitButton").addEventListener("click", function() {
 	removeReply(this.dataset.replyId);
 });
 
-// 댓글 수정하기위해 전 댓글 가져오기
 function readReplyAndSetModalForm(id) {
 	fetch(`\${ctx}/reply/get/\${id}`)
 	.then(res => res.json())
@@ -213,35 +209,25 @@ function readReplyAndSetModalForm(id) {
 	});
 }
 
-
-// 댓글 수정
 function listReply() {
 	const boardId = document.querySelector("#boardId").value;
-	// 댓글을 가져오는 시점
 	fetch(`\${ctx}/reply/list/\${boardId}`)
 	.then(res => res.json())
 	.then(list => {
-		// 댓글 새로고침 안하고 바로 화면출력
 		const replyListContainer = document.querySelector("#replyListContainer");
 		replyListContainer.innerHTML = "";
 		
-		// 댓글을 만들고 리스트로 가져오는 시점
 		for (const item of list) {
 			
-			// 댓글 수정 버튼
 			const modifyReplyButtonId = `modifyReplyButton\${item.id}`;
-			// 댓글 삭제 버튼 이벤트 추가
 			const removeReplyButtonId = `removeReplyButton\${item.id}`;
 			// console.log(item.id);
-			
-			// 오른쪽 마진 "me-auto"
 			const replyDiv = `
 				<div class="list-group-item d-flex">
-					<div class="me-auto"> 
+					<div class="me-auto">
 						<div>
-								\${item.content} 
+							\${item.content}
 						</div>
-						
 							<small class="text-muted">
 								<i class="fa-regular fa-clock"></i> 
 								\${item.ago}
@@ -249,14 +235,13 @@ function listReply() {
 					</div>
 					<div>
 						<button class="btn btn-light" data-bs-toggle="modal" data-bs-target="#modifyReplyFormModal" data-reply-id="\${item.id}" id="\${modifyReplyButtonId}">
-							<i class="fa-solid fa-highlighter"></i>
+							<i class="fa-solid fa-pen"></i>
 						</button>
 						<button class="btn btn-light" data-bs-toggle="modal" data-bs-target="#removeReplyConfirmModal" data-reply-id="\${item.id}" id="\${removeReplyButtonId}">
-							<i class="fa-solid fa-delete-left"></i>
+							<i class="fa-solid fa-x"></i>
 						</button>
 					</div>
-					</div>`;
-				/* data-reply-id => dataset 이라는 attribute를 이용해 reply-id에서 id값을 꺼내쓸수 있음 */
+				</div>`;
 			replyListContainer.insertAdjacentHTML("beforeend", replyDiv);
 			// 수정 폼 모달에 댓글 내용 넣기
 			document.querySelector("#" + modifyReplyButtonId)
@@ -268,10 +253,9 @@ function listReply() {
 			
 			// 삭제확인 버튼에 replyId 옮기기
 			document.querySelector("#" + removeReplyButtonId)
-				.addEventListener("click", function() { // 삭제하는 함수
+				.addEventListener("click", function() {
 					// console.log(this.id + "번 삭제버튼 클릭됨");
-					console.log(this.dataset.replyId + "번 댓글 삭제할 예정, 모달 띄움") // dataset을 통해 "#" + removeReplyButtonId의 참조값을 가져옴
-																						 // 그래서 this를 사용
+					console.log(this.dataset.replyId + "번 댓글 삭제할 예정, 모달 띄움")
 					document.querySelector("#removeConfirmModalSubmitButton").setAttribute("data-reply-id", this.dataset.replyId);
 					// removeReply(this.dataset.replyId);
 				});
@@ -279,7 +263,6 @@ function listReply() {
 	});
 }
 
-// 댓글 삭제
 function removeReply(replyId) {
 	// /reply/remove/{id}, method:"delete"
 	fetch(ctx + "/reply/remove/" + replyId, {
@@ -290,10 +273,9 @@ function removeReply(replyId) {
 		document.querySelector("#replyMessage1").innerText = data.message;
 		toast.show();
 	})
-	.then(() => listReply()); // 댓글 삭제되고 새로고침필요없이 바로 화면출력
+	.then(() => listReply());
 }
 
-// 게시글 댓글 추가
 document.querySelector("#replySendButton1").addEventListener("click", function() {
 	const boardId = document.querySelector("#boardId").value;
 	const content = document.querySelector("#replyInput1").value;
@@ -303,7 +285,6 @@ document.querySelector("#replySendButton1").addEventListener("click", function()
 		content
 	};
 	
-	// 댓글이 등록되는 시점
 	fetch(`\${ctx}/reply/add`, {
 		method : "post",
 		headers : {
@@ -313,12 +294,10 @@ document.querySelector("#replySendButton1").addEventListener("click", function()
 	})
 	.then(res => res.json())
 	.then(data => {
-		// 새댓글이 등록되고 다시 빈스트링으로 초기화
 		document.querySelector("#replyInput1").value = "";
 		document.querySelector("#replyMessage1").innerText = data.message;
 		toast.show();
 	})
-	// 새로운 댓글 바로 출력
 	.then(() => listReply());
 });
 </script>

@@ -11,10 +11,10 @@
 <title>Insert title here</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-<style type="text/css">
+<style>
 .custom-check.form-check-input:checked {
-	background-color: #f0a59c;
-	border-color: #f0a59c;
+    background-color: #dc3545;
+    border-color: #dc3545;
 }
 </style>
 </head>
@@ -23,36 +23,34 @@
 	<div class="container-md">
 		<div class="row">
 			<div class="col">
-	<h1>${board.id }번 게시물 수정</h1>
-	
-	<!-- 수정 -->
-	<!-- id는 modal button id와 같이 부여하여 수정완료 버튼을 누르고 수정이 되도록 활성화 -->
-	<form id="modifyForm" action="" method="post" enctype="multipart/form-data">
-		<input type="hidden" name="id" value="${board.id }">
-		<!-- .mb-3*4>label.form-label+input.form-control -->
-		<div class="mb-3">
-			<label for="" class="form-label">제목</label>
-			<input type="text" name="title" class="form-control" value="${board.title }">
-		</div>
-		
-		<div class="mb-3">
-			<label for="" class="form-label">본문</label>
-			<textarea rows="5" name="content" class="form-control">${board.content }</textarea>
-		</div>
-		
-		<%-- 이미지 출력 --%>
+
+				<h1>${board.id }번 게시물 수정</h1>
+				
+				<form id="modifyForm" action="" method="post" enctype="multipart/form-data">
+					<input type="hidden" name="id" value="${board.id }">
+					<!-- .mb-3*4>label.form-label+input.form-control -->
+					<div class="mb-3">
+						<label for="" class="form-label">제목</label>
+						<input type="text" name="title" class="form-control" value="${board.title }">
+					</div>
+					<div class="mb-3">
+						<label for="" class="form-label">본문</label>
+						<textarea rows="5" name="content" class="form-control">${board.content }</textarea>
+					</div>
+					
+					<%-- 이미지 출력 --%>
 					<div class="mb-3">
 						<c:forEach items="${board.fileName }" var="name" varStatus="status">
 							<div class="row">
 								<div class="col-2 d-flex justify-content-center align-items-center">
-								
 									<%-- 삭제 여부 체크박스 --%>
-								<div class="form-check form-switch text-danger">
-								  <input name="removeFiles" value="${name }" class="custom-check form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked>
-								  <label class="form-check-label" for="flexSwitchCheckChecked${status }"><i class="fa-regular fa-trash-can"></i></label>
+									
+									<div class="form-check form-switch text-danger">
+									  <input name="removeFiles" value="${name }" class="custom-check form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked${status.count }" >
+									  <label class="form-check-label" for="flexSwitchCheckChecked${status.count }"><i class="fa-regular fa-trash-can"></i></label>
+									</div>
+									
 								</div>
-							</div>
-								
 								<div class="col-10">
 									<div>
 										<img class="img-fluid img-thumbnail" src="${imgUrl }/${board.id }/${URLEncoder.encode(name, 'utf-8')}" alt="">
@@ -65,16 +63,13 @@
 					<div class="mb-3">
 						<label for="" class="form-label">파일 추가</label>
 						<input multiple type="file" accept="image/*" class="form-control" name="files">
-						<%-- 이미 있는 파일 확인창 --%>
 						<div class="form-text" id="addFileInputText"></div>
 					</div>
-					
 					
 					<div class="mb-3">
 						<label for="" class="form-label">작성자</label>
 						<input readonly type="text" class="form-control" value="${board.writer }">
 					</div>
-					
 					<div class="mb-3">
 						<label for="" class="form-label">작성일시</label>
 						<input type="text" class="form-control" value="${board.inserted }" readonly>
@@ -129,10 +124,10 @@
 	    </div>
 	  </div>
 	</div>
+
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
-<!-- 자바스크립트 -->
 <script>
-	// 중복되는 파일 확인
 	document.querySelector(`#modifyForm input[name="files"]`).addEventListener("change", function() {
 		const textDiv = document.querySelector("#addFileInputText");
 		textDiv.innerText = "";
@@ -161,6 +156,7 @@
 			textDiv.innerText = "중복된 파일명이 있습니다.";
 		}
 	});
+
 	// 수정확인 버튼 클릭하면 수정 form 전송
 	document.querySelector("#modifyConfirmButton").addEventListener("click", function() {
 		document.querySelector("#modifyForm").submit();
@@ -171,6 +167,11 @@
 		document.querySelector("#removeForm").submit();
 	});
 </script>
-
 </body>
 </html>
+
+
+
+
+
+

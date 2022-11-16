@@ -3,6 +3,7 @@ package com.study.controller.board;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,14 +24,12 @@ public class BoardController {
 	@Autowired
 	private BoardService service;
 
-	// 게시물 등록
 	@GetMapping("register")
 	public void register() {
 		// 게시물 작성 view로 포워드
-		// /WER-INF/views/board/register.jsp
+		// /WEB-INF/views/board/register.jsp
 	}
 	
-	// 등록한글 보여줌
 	@PostMapping("register")
 	public String register(
 			BoardDto board,
@@ -48,7 +47,6 @@ public class BoardController {
 //			System.out.println(file.getOriginalFilename());
 //		}
 		
-		
 		// business logic
 		int cnt = service.register(board, files);
 		
@@ -61,41 +59,60 @@ public class BoardController {
 		// /board/list로 redirect
 		return "redirect:/board/list";
 	}
-		
-	// 게시물 목록으로 redirect
-	@GetMapping("list")            // 페이지가 없으면 1로
+	
+	@GetMapping("list")
 	public void list(
-			@RequestParam(name="page", defaultValue = "1") int page,
+			@RequestParam(name = "page", defaultValue = "1") int page,
 			@RequestParam(name = "t", defaultValue = "all") String type,
-			@RequestParam(name="q", defaultValue = "") String keyword, // 검색 String q(keyword)
-			PageInfo pageInfo, // Model이 생략되어있음
+			@RequestParam(name = "q", defaultValue = "") String keyword,
+			PageInfo pageInfo,
 			Model model) {
-		// request param 수집/가공
-		
-		// 비지니스 로직(서비스)
+		// request param
+		// business logic
 		List<BoardDto> list = service.listBoard(page, type, keyword, pageInfo);
 		
 		// add attribute
 		model.addAttribute("boardList", list);
 		// forward
 	}
+
+	// 위 list 메소드 파라미터 PageInfo에 일어나는 일을 풀어서 작성
+	/*
+	private void list2(
+			@RequestParam(name = "page", defaultValue = "1") int page,
+			HttpServletRequest request,
+			Model model) {
+		// request param
+		PageInfo pageInfo = new PageInfo();
+		pageInfo.setLastPageNumber(Integer.parseInt(request.getParameter("lastPageNumber")));
+		model.addAttribute("pageInfo", pageInfo);
+		
+		// business logic
+		List<BoardDto> list = service.listBoard(page, pageInfo);
+		
+		// add attribute
+		model.addAttribute("boardList", list);
+		// forward
+	}
+	*/
 	
-	// 게시글 글 보기
-	@GetMapping("get")
+	
+	@GetMapping("get") 
 	public void get(
-			//@RequestParam 생략가능 (request 수집가공)
-			@RequestParam(name="id") int id,
-						Model model) {
-		// 비지니스 로직 (게시물 db에서 가져오기)
+			// @RequestParam 생략 가능
+			@RequestParam(name = "id") int id,
+			Model model) {
+		// req param
+		// business logic (게시물 db에서 가져오기)
 		BoardDto board = service.get(id);
-//		System.out.println(board);
 		// add attribute
 		model.addAttribute("board", board);
-		// forward / redirect
+		// forward
 		
 	}
 	
 	@GetMapping("modify")
+	@PreAuthorize("@boardSecurity.checkWriter(authentication.name, #id)")
 	public void modify(int id, Model model) {
 		BoardDto board = service.get(id);
 		model.addAttribute("board", board);
@@ -103,13 +120,14 @@ public class BoardController {
 	}
 	
 	@PostMapping("modify")
+	@PreAuthorize("@boardSecurity.checkWriter(authentication.name, #board.id)")
 	public String modify(
-			BoardDto board,
-			@RequestParam("files") MultipartFile[] addfiles,
+			BoardDto board, 
+			@RequestParam("files") MultipartFile[] addFiles,
 			@RequestParam(name = "removeFiles", required = false) List<String> removeFiles,
 			RedirectAttributes rttr) {
 		
-		int cnt = service.update(board, addfiles, removeFiles);
+		int cnt = service.update(board, addFiles, removeFiles);
 		
 		if (cnt == 1) {
 			rttr.addFlashAttribute("message", board.getId() + "번 게시물이 수정되었습니다.");
@@ -120,14 +138,16 @@ public class BoardController {
 		return "redirect:/board/list";
 	}
 	
-	// 게시글 글 지우기
 	@PostMapping("remove")
+	@PreAuthorize("@boardSecurity.checkWriter(authentication.name, #id)")
 	public String remove(int id, RedirectAttributes rttr) {
 		int cnt = service.remove(id);
 		
-		if(cnt == 1) {
+		if (cnt == 1) {
+			// id번 게시물이 삭제되었습니다.
 			rttr.addFlashAttribute("message", id + "번 게시물이 삭제되었습니다.");
 		} else {
+			// id번 게시물이 삭제되지 않았습니다.
 			rttr.addFlashAttribute("message", id + "번 게시물이 삭제되지 않았습니다.");
 		}
 		
@@ -136,3 +156,11 @@ public class BoardController {
 	
 	
 }
+
+
+
+
+
+
+
+
