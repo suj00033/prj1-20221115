@@ -24,6 +24,12 @@ public class MemberController {
 	@Autowired
 	private MemberService service;
 	
+	// 포워드 요청은 get이랑 동일하기에 아무것도 안써도됨
+	@GetMapping("login")
+	public void login() {
+		
+	}
+	
 	// 닉네임 중복 확인
 	@PostMapping("existNickName")
 	@ResponseBody
