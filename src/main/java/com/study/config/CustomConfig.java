@@ -52,6 +52,7 @@ public class CustomConfig {
 	public SecurityFilterChain securityFileterChain(HttpSecurity http) throws Exception {
 		// 로그인 페이지 만들기
 		http.formLogin().loginPage("/member/login");
+		http.csrf().disable();
 			
 		return http.build();
 	}
