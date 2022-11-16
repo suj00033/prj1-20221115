@@ -3,7 +3,10 @@ package com.study.controller.member;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +27,9 @@ public class MemberController {
 	@Autowired
 	private MemberService service;
 	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	
 	// 포워드 요청은 get이랑 동일하기에 아무것도 안써도됨
 	@GetMapping("login")
 	public void login() {
@@ -31,13 +37,13 @@ public class MemberController {
 	}
 	
 	// 닉네임 중복 확인
-	@PostMapping("existNickName")
+	@GetMapping("existNickName/{nickName}")
 	@ResponseBody
-	public Map<String, Object> existNickName(@RequestBody Map<String, String> req) {
+	public Map<String, Object> existNickName(@PathVariable String nickName) {
 		Map<String, Object> map = new HashMap<>();
-		
-		MemberDto member = service.getByNickName(req.get("nickName"));
-		
+
+		MemberDto member = service.getByNickName(nickName);
+
 		if (member == null) {
 			map.put("status", "not exist");
 			map.put("message", "사용가능한 닉네임입니다.");
@@ -45,6 +51,7 @@ public class MemberController {
 			map.put("status", "exist");
 			map.put("message", "이미 존재하는 닉네임입니다.");
 		}
+
 		return map;
 	}
 	
@@ -119,7 +126,8 @@ public class MemberController {
 		MemberDto oldMember = service.getById(member.getId());
 		
 		rttr.addAttribute("id", member.getId());
-		if (oldMember.getPassword().equals(oldPassword)) {
+		boolean passwordMatch = passwordEncoder.matches(oldPassword, oldMember.getPassword());
+		if (passwordMatch) {
 			// 기존 암호가 맞으면 회원 정보 수정
 			int cnt = service.modify(member);
 
@@ -138,25 +146,26 @@ public class MemberController {
 	}
 	
 	@PostMapping("remove")
-	public String remove(String id, String oldPassword, RedirectAttributes rttr) {
-		// 예전 정보를 가지고 와서
-		MemberDto oldMember =  service.getById(id);
-		
-		// 예전 암호와 일치하면 탈퇴 진행
-		if (oldMember.getPassword().equals(oldPassword)) {
-			int cnt = service.remove(id);
-		
-		rttr.addFlashAttribute("message", "회원 탈퇴하였습니다.");
-		
-		return "redirect:/board/list";
-	
-		// 아니면 modify창으로 되돌아옴
+	public String remove(String id, String oldPassword, RedirectAttributes rttr, HttpServletRequest request)
+			throws Exception {
+		MemberDto oldmember = service.getById(id);
+
+		boolean passwordMatch = passwordEncoder.matches(oldPassword, oldmember.getPassword());
+
+		if (passwordMatch) {
+			service.remove(id);
+
+			rttr.addFlashAttribute("message", "회원 탈퇴하였습니다.");
+			request.logout();
+
+			return "redirect:/board/list";
+
 		} else {
 			rttr.addAttribute("id", id);
 			rttr.addFlashAttribute("message", "암호가 일치하지 않습니다.");
-		
 			return "redirect:/member/modify";
 		}
+
 	}
 }
 
