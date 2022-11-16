@@ -39,16 +39,12 @@
 	</delete>
 
 	<update id="update">
-	UPDATE Member
+	UPDATE Board
 	SET
-		nickName = #{nickName},
-		<if test="password != null">
-		password = #{password},
-		</if>
-		email = #{email}
+		title = #{title},
+		content = #{content}
 	WHERE
 		id = #{id}
-	
 	</update>
 
 	<select id="selectById" resultType="com.study.domain.member.MemberDto">

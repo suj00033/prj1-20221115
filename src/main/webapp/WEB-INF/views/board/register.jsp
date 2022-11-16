@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="my" tagdir="/WEB-INF/tags" %>
 <!DOCTYPE html>
 <html>
@@ -12,6 +13,10 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
+
+	
+
+
 	<my:navBar active="register"></my:navBar>
 	<div class="container-md">
 		<div class="row">
@@ -34,7 +39,10 @@
 					
 					<div class="mb-3">
 						<label for="" class="form-label">작성자</label>
-						<input required="required" type="text" class="form-control" name="writer">
+						<input   
+							<%-- 로그인한 사람의 username --%> 
+							value="<sec:authentication property="name"/>"
+							readonly type="text" class="form-control" name="writer">
 					</div>
 					
 					<input id="submitButton1" class="btn btn-primary" type="submit" value="등록">
