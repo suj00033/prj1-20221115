@@ -11,18 +11,16 @@
 
 <%-- authorize tag --%>
 <%-- spring security expressions 검색해서 참고, 책p673, 674 --%>
-<sec:authorize access="isAuthenticated()">
+<sec:authorize access="isAuthenticated()" var="loggedIn"/>
 	<%-- 로그인되었을때 보임 --%>
-	<h1>로그인됨!</h1>
-</sec:authorize>
+	<c:if test="${loggedIn }">
+		<h1>로그인 됨!</h1>
+	</c:if>
 
-<sec:authorize access="not isAuthenticated()">
 	<%-- 로그인 안되었을때 보임 --%>
-	<h1>로그인안됨!</h1>
-</sec:authorize>
-	
-
-
+	<c:if test="${not loggedIn }">
+		<h1>로그인 안됨!</h1>
+	</c:if>
 
 <c:url value="/board/list" var="listLink" />
 <c:url value="/board/register" var="registerLink" />
@@ -42,25 +40,35 @@
         <li class="nav-item">
           <a class="nav-link ${active eq 'list' ? 'active' : '' }" href="${listLink }">목록</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link ${active eq 'register' ? 'active' : '' }" href="${registerLink }">작성</a>
-        </li>
         
-        <li class="nav-item">
-          <a class="nav-link ${active eq 'memberList' ? 'active' : '' }" href="${memberListLink }">회원목록</a>
-        </li>
+        <%-- 로그인 상태일때만 작성, 회원목록 보이도록 --%>
+        <c:if test="${loggedIn }">
+	        <li class="nav-item">
+	          <a class="nav-link ${active eq 'register' ? 'active' : '' }" href="${registerLink }">작성</a>
+	        </li>
+	        
+	        <li class="nav-item">
+	          <a class="nav-link ${active eq 'memberList' ? 'active' : '' }" href="${memberListLink }">회원목록</a>
+	        </li>
+        </c:if>
         
-        <li class="nav-item">
-          <a class="nav-link ${active eq 'signup' ? 'active' : '' }" href="${signupLink }">회원가입</a>
-        </li>
+        <%-- 로그아웃 상태에서만 회원가입 메뉴가 보이도록 --%>
+       <c:if test="${not loggedIn }">
+	        <li class="nav-item">
+	          <a class="nav-link ${active eq 'signup' ? 'active' : '' }" href="${signupLink }">회원가입</a>
+	        </li>
+	        
+	        <li class="nav-item">
+	        	<a href="${loginLink }" class="nav-link">로그인</a>
+	        </li>
+        </c:if>   
         
-        <li class="nav-item">
-          <a href="${loginLink }" class="nav-link">로그인</a>
-        </li>
-        
-        <li class="nav-item">
-          <a href="${logoutLink }" class="nav-link">로그아웃</a>
-        </li>
+        <%-- 로그인 되어있을때만 로그아웃 보이도록 --%>
+        <c:if test="${loggedIn }">
+	        <li class="nav-item">
+	        	<a href="${logoutLink }" class="nav-link">로그아웃</a>
+	        </li>
+        </c:if>
         
       </ul>
       <form action="${listLink }" class="d-flex" role="search">

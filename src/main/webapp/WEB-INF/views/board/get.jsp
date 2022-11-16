@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ page import="java.net.*" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="my" tagdir="/WEB-INF/tags" %>
 <!DOCTYPE html>
 <html>
@@ -25,9 +26,14 @@
 					<c:url value="/board/modify" var="modifyLink">
 						<c:param name="id" value="${board.id }"></c:param>
 					</c:url>
-					<a class="btn btn-warning" href="${modifyLink }">
-						<i class="fa-solid fa-pen-to-square"></i>
-					</a>
+					
+					<sec:authorize access="isAuthenticated()">
+						<a class="btn btn-warning" href="${modifyLink }">
+							<i class="fa-solid fa-pen-to-square"></i>
+						</a>
+					</sec:authorize>
+					
+					
 				</h1>
 			
 				<div class="mb-3">
@@ -48,7 +54,6 @@
 				<div>
 					<c:forEach items="${board.fileName }" var="name">
 						<div>
-						                                             <%-- aws 저장소로 주소 변경 --%>
 							<img class="img-fluid img-thumbnail" src="${imgUrl }/${board.id }/${URLEncoder.encode(name, 'utf-8')}" alt="">
 						</div>
 					</c:forEach>		
@@ -75,44 +80,50 @@
 	
 	<hr>
 	
-	<%-- toast --%>
+	<%-- 댓글 메시지 토스트 --%>
 	<div id="replyMessageToast" class="toast align-items-center top-0 start-50 translate-middle-x position-fixed" role="alert" aria-live="assertive" aria-atomic="true">
-  <div class="d-flex">
-    <div id="replyMessage1" class="toast-body">
-      Hello, world! This is a toast message.
-    </div>
-    <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-  </div>
-</div>
+	  <div class="d-flex">
+	    <div id="replyMessage1" class="toast-body">
+	      Hello, world! This is a toast message.
+	    </div>
+	    <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+	  </div>
+	</div>
 	
-	<%-- 댓글쓰기 --%>
 	<div class="container-md">
-			<div class="row">
-				<div class="col">
-					<%-- 댓글 경계선 아이콘 --%>
-					<h3><i class="fa-solid fa-comments"></i></h3>
-				</div>
+		<div class="row">
+			<div class="col">
+				<h3><i class="fa-solid fa-comments"></i></h3>
 			</div>
-			<div class="row">
-				<div class="col">							
-				<%-- 댓글 작성하는 부분 --%>
+		</div>
+		<div class="row">
+			<div class="col">
+			
+				<sec:authorize access="isAuthenticated()">
+					<%-- 댓글 작성 --%>
 					<input type="hidden" id="boardId" value="${board.id }">
 					
 					<div class="input-group">
-						<input type="text" id="replyInput1">
-						<button class="btn btn-outline-secondary" id="replySendButton1"><i class="fa-solid fa-message"></i></button>
+						<input type="text" class="form-control" id="replyInput1">
+						<button class="btn btn-outline-secondary" id="replySendButton1"><i class="fa-solid fa-reply"></i></button>
 					</div>
-				</div>
+				</sec:authorize>
+				<sec:authorize access="not isAuthenticated()">
+					<div class="alert alert-light">
+						댓글을 작성하시려면 로그인하세요.
+					</div>
+				</sec:authorize>
 			</div>
-			
-			<div class="row mt-3">
-				<div class="col">
-					<div class="list-group" id="replyListContainer">
-						<%-- 댓글 리스트 출력되는곳 --%>
-					</div>
+		</div>
+		
+		<div class="row mt-3">
+			<div class="col">
+				<div class="list-group" id="replyListContainer">
+					<%-- 댓글 리스트 출력되는 곳 --%>
 				</div>
 			</div>
 		</div>
+	</div>
 	
 	
 	<%-- 댓글 삭제 확인 모달 --%>
