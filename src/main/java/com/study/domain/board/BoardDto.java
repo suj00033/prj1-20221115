@@ -18,6 +18,8 @@ public class BoardDto {
 	private int countReply;
 	private int countFile;
 	
+	private int countLike;
+	
 	// 여러 파일명을 담기위해 리스트로
 	private List<String> fileName;
 	

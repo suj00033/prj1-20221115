@@ -217,6 +217,7 @@ function listReply() {
 		const replyListContainer = document.querySelector("#replyListContainer");
 		replyListContainer.innerHTML = "";
 		
+		// 댓글 item의 리스트
 		for (const item of list) {
 			
 			const modifyReplyButtonId = `modifyReplyButton\${item.id}`;
