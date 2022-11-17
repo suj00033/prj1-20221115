@@ -13,6 +13,8 @@ public class ReplyDto {
 	private int id;
 	private int boardId;
 	private String content;
+	// 댓글 작성자 추가
+	private String writer;
 	
 	@JsonFormat(shape = Shape.STRING)
 	private LocalDateTime inserted;

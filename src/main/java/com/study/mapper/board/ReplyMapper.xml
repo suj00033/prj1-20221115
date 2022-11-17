@@ -23,6 +23,7 @@
 		id,
 		boardId,
 		content,
+		writer,
 		inserted
 	FROM
 		Reply
@@ -41,6 +42,7 @@
 		id,
 		boardId,
 		content,
+		writer,
 		inserted
 	FROM
 		Reply
@@ -50,8 +52,9 @@
 		id DESC
 	</select>
 
+	<!-- 댓글 작성자 추가 -->
 	<insert id="insert">
-	INSERT INTO Reply (boardId, content)
-	VALUES (#{boardId}, #{content})
+	INSERT INTO Reply (boardId, content, writer)
+	VALUES (#{boardId}, #{content}, #{writer})
 	</insert>
 </mapper>
