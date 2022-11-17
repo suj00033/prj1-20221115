@@ -1,15 +1,20 @@
 package com.study.controller.board;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -154,6 +159,23 @@ public class BoardController {
 		return "redirect:/board/list";
 	}
 	
+	// 좋아요 보내는 메소드
+	@PutMapping("like")
+	// fetch 요청 받기위해
+	@ResponseBody
+	@PreAuthorize("isAuthenticated()")
+	public Map<String, Object> like(@RequestBody Map<String, String> req, 
+									Authentication authentication) {
+		
+		System.out.println(req);
+		
+	
+		Map<String, Object> result = service.updateLike(req.get("boardId"), 
+														authentication.getName());
+	
+		return result;
+	
+	}
 	
 }
 

@@ -20,9 +20,18 @@ public interface BoardMapper {
 
 	int insertFile(int id, String fileName);
 	
-
+	// 파일 삭제
 	int deleteFileByBoardId(int id);
 
 	int deleteFileBoardIdAndFileName(int id, String fileName);
+	
+	// 좋아요
+	int getLikeByBoardIdAndMemberId(String boardId, String memberId);
+
+	void deleteLike(String boardId, String memberId);
+
+	void insertLike(String boardId, String memberId);
+
+	int countLikeByBoardId(String boardId);
 	
 }

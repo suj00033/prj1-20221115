@@ -1,6 +1,8 @@
 package com.study.service.board;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -183,6 +185,30 @@ public class BoardService {
 				.key(key)
 				.build();
 		s3Client.deleteObject(deleteObjectRequest);
+	}
+
+	public Map<String, Object> updateLike(String boardId, String memberId) {
+		Map<String, Object> map = new HashMap<>();
+		
+		int cnt = boardMapper.getLikeByBoardIdAndMemberId(boardId, memberId);
+		// baordId와 username으로 좋아요 테이블 검색해서 
+		if (cnt == 1) {
+			// 있으면 >> 삭제
+			boardMapper.deleteLike(boardId, memberId);
+			map.put("current", "not liked");
+			
+		} else {
+			// 없으면 >> insert
+			boardMapper.insertLike(boardId, memberId);
+			map.put("current", "liked");
+			
+		}
+		
+		int countAll = boardMapper.countLikeByBoardId(boardId);
+		// 현재 몇개인지
+		map.put("count", countAll);
+		
+		return map;
 	}
 	
 }
