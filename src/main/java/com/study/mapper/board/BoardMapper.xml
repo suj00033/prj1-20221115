@@ -84,6 +84,7 @@
 	
 	<!-- 하나의 게시물을 가지고오는 쿼리 -->
 	<!-- fileName이 여러개가 되기 때문에 따로 빼서 작성, 성능향상을 위해 fileId 삽입 -->
+	<!-- 서브쿼리를 이용해서  -->
 	<select id="select" resultMap="boardMap">
 	SELECT
 		b.id,
@@ -91,12 +92,12 @@
 		b.content,
 		b.writer,
 		b.inserted,
-		COUNT(l.memberId) countLike,
+		(SELECT COUNT(*) FROM BoardLike WHERE boardId = b.id AND memberId = #{username}) liked,
+		(SELECT COUNT(*) FROM BoardLike WHERE boardId = b.id) countLike,
 		f.id fileId,
 		f.name fileName
 	FROM
 		Board b LEFT JOIN File f ON b.id = f.boardId
-				LEFT JOIN BoardLike l ON b.id = l.boardId
 	WHERE
 		b.id = #{id}
 	</select>

@@ -110,9 +110,9 @@ public class BoardService {
 		return boardMapper.list(offset, records, type, "%" + keyword + "%");
 	}
 
-	public BoardDto get(int id) {
+	public BoardDto get(int id, String username) {
 		// TODO Auto-generated method stub
-		return boardMapper.select(id);
+		return boardMapper.select(id, username);
 	}
 
 	public int update(BoardDto board, MultipartFile[] addFiles, List<String> removeFiles) {
@@ -209,6 +209,11 @@ public class BoardService {
 		map.put("count", countAll);
 		
 		return map;
+	}
+
+	public BoardDto get(int id) {
+		// TODO Auto-generated method stub
+		return get(id, null);
 	}
 	
 }

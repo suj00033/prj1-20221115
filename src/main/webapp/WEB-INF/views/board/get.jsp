@@ -38,10 +38,25 @@
 						
 					</h1>
 					<h1>
-						<span id="likeButton">
-							좋아요
-						</span>
-						<span id="LikeCount">
+						<button 
+							
+							<sec:authorize access="not isAuthenticated()">
+								disabled
+							</sec:authorize>
+						
+							id="likeButton"
+							class="btn btn-light"
+							>
+							
+							<c:if test="${board.liked }">
+								<i class="fa-solid fa-thumbs-up"></i>
+							</c:if>
+							<c:if test="${not board.liked }">
+								<i class="fa-regular fa-thumbs-up"></i>
+							</c:if>
+							
+						</button>
+						<span id="likeCount">
 							${board.countLike }
 						</span>
 						
