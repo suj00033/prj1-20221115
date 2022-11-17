@@ -37,12 +37,14 @@
 	WHERE id = #{id}
 	</delete>
 
+	<!-- 게시글 id를 가져와서 댓글의 정보들을 가져옴 -->
 	<select id="selectReplyByBoardId" resultType="com.study.domain.board.ReplyDto">
 	SELECT 
 		id,
 		boardId,
 		content,
 		writer,
+		(writer = #{username}) editable,
 		inserted
 	FROM
 		Reply

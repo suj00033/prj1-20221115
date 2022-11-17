@@ -15,6 +15,8 @@ public class ReplyDto {
 	private String content;
 	// 댓글 작성자 추가
 	private String writer;
+	// 수정가능한지 버튼 활성화
+	private boolean editable;
 	
 	@JsonFormat(shape = Shape.STRING)
 	private LocalDateTime inserted;
