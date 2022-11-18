@@ -340,30 +340,34 @@ function removeReply(replyId) {
 	.then(() => listReply());
 }
 
-document.querySelector("#replySendButton1").addEventListener("click", function() {
-	const boardId = document.querySelector("#boardId").value;
-	const content = document.querySelector("#replyInput1").value;
+const replySendButton1 = document.querySelector("#replySendButton1");
+if (replySendButton1 != null) {
 	
-	const data = {
-		boardId,
-		content
-	};
-	
-	fetch(`\${ctx}/reply/add`, {
-		method : "post",
-		headers : {
-			"Content-Type" : "application/json"
-		},
-		body : JSON.stringify(data)
-	})
-	.then(res => res.json())
-	.then(data => {
-		document.querySelector("#replyInput1").value = "";
-		document.querySelector("#replyMessage1").innerText = data.message;
-		toast.show();
-	})
-	.then(() => listReply());
-});
+	document.querySelector("#replySendButton1").addEventListener("click", function() {
+		const boardId = document.querySelector("#boardId").value;
+		const content = document.querySelector("#replyInput1").value;
+		
+		const data = {
+			boardId,
+			content
+		};
+		
+		fetch(`\${ctx}/reply/add`, {
+			method : "post",
+			headers : {
+				"Content-Type" : "application/json"
+			},
+			body : JSON.stringify(data)
+		})
+		.then(res => res.json())
+		.then(data => {
+			document.querySelector("#replyInput1").value = "";
+			document.querySelector("#replyMessage1").innerText = data.message;
+			toast.show();
+		})
+		.then(() => listReply());
+	});
+}
 </script>
 </body>
 </html>
