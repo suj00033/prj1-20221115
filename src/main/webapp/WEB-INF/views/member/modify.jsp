@@ -38,7 +38,7 @@
 					
 					<div class="mb-3">
 						<label for="" class="form-label">
-							닉네임 
+							별명 
 						</label>
 						<div class="input-group">
 							<input id="nickNameInput1" class="form-control" type="text" value="${member.nickName }" name="nickName" data-old-value="${member.nickName }">
@@ -51,9 +51,9 @@
 					
 					<div class="mb-3">
 						<label for="" class="form-label">
-							암호 
+							새 암호 
 						</label>
-						<input disabled id="passwordInput1" class="form-control" type="text" value="" name="password">
+						<input disabled id="passwordInput1" class="form-control" type="password" value="" name="password">
 						<div id="passwordText1" class="form-text"></div>
 					</div>
 					
@@ -61,7 +61,7 @@
 						<label for="" class="form-label">
 							새 암호 확인
 						</label>
-						<input disabled id="passwordInput2" class="form-control" type="text">
+						<input disabled id="passwordInput2" class="form-control" type="password">
 					</div>
 					
 					
@@ -75,7 +75,6 @@
 						</div>
 						<div id="emailText1" class="form-text"></div>
 					</div>
-					
 					<div class="mb-3">
 						<label for="" class="form-label">
 							가입일시 
@@ -106,7 +105,7 @@
 	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 	      </div>
 	      <div class="modal-body">
-	        <input id="oldPasswordInput1" type="text" class="form-control">
+	        <input id="oldPasswordInput1" type="password" class="form-control">
 	      </div>
 	      <div class="modal-footer">
 	        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -125,7 +124,7 @@
 	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 	      </div>
 	      <div class="modal-body">
-	        <input id="oldPasswordInput2" type="text" class="form-control">
+	        <input id="oldPasswordInput2" type="password" class="form-control">
 	      </div>
 	      <div class="modal-footer">
 	        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -137,14 +136,12 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
 <script>
 const ctx = "${pageContext.request.contextPath}";
-
-let availableNickName = true;
 let availablePassword = true;
 let availableEmail = true;
-
+let availableNickName = true;
 function enableModifyButton() {
 	const button = document.querySelector("#modifyModalButton1");
-	if (availablePassword && availableEmail) {
+	if (availablePassword && availableEmail && availableNickName) {
 		// 수정버튼 활성화
 		button.removeAttribute("disabled")
 	} else {
@@ -152,7 +149,6 @@ function enableModifyButton() {
 		button.setAttribute("disabled", "");
 	}
 }
-
 <%-- 새 패스워드 입력 체크박스 --%>
 document.querySelector("#newPasswordCheckbox1").addEventListener("change", function() {
 	const pwInput1 = document.querySelector("#passwordInput1");
@@ -165,63 +161,10 @@ document.querySelector("#newPasswordCheckbox1").addEventListener("change", funct
 		pwInput2.setAttribute("disabled", "");
 	}
 });
-
-<%-- 닉네임 중복확인 --%>
-const nickNameInput1 = document.querySelector("#nickNameInput1");
-const nickNameButton1 = document.querySelector("#nickNameButton1");
-const nickNameText1 = document.querySelector("#nickNameText1");
-
-// 닉네임 중복확인 버튼 클릭하면
-nickNameButton1.addEventListener("click", function() {
-	availableNickName = false;
-	
-	const nickName = nickNameInput1.value;
-	
-	fetch(`${ctx}/member/existNickName`, {
-		method : "post",
-		headers : {
-			"Content-Type" : "application/json"
-		},
-		body : JSON.stringify({nickName})
-	})
-		.then(res => res.json())
-		.then(data => {
-			nickNameText1.innerText = data.message;
-			
-			if (data.status == "not exist") {
-				availableNickName = true;
-			} else {
-				enableModifyButton();
-			}
-		});
-});
-
-// 닉네임 input값이 변경되었을때
-nickNameInput1.addEventListener("keyup", function() {
-	availableNickName = false;
-	
-	const oldValue = nickNameInput1.dataset.oldValue;
-	const newValue = nickNameInput1.value;
-	if (oldValue == newValue) {
-		// 기존 닉네임과 같으면 아무일도 일어나지 않음
-		nickNameText1.innerText = "";
-		nickNameButton1.setAttribute("disabled", "disabled");
-		availableNickName = true;
-	} else {
-		// 기존 닉네임과 다르면 중복체크 요청
-		nickNameText1.innerText = "닉네임 중복확인을 해주세요.";
-		nickNameButton1.removeAttribute("disabled");
-	}
-	
-	enableModifyButton();
-});
-
-
 <%-- 이메일 중복확인 --%>
 const emailInput1 = document.querySelector("#emailInput1");
 const emailButton1 = document.querySelector("#emailButton1");
 const emailText1 = document.querySelector("#emailText1");
-
 // 이메일 중복확인 버튼 클릭하면
 emailButton1.addEventListener("click", function() {
 	availableEmail = false;
@@ -245,7 +188,6 @@ emailButton1.addEventListener("click", function() {
 			enableModifyButton();
 		});
 });
-
 // 이메일 input의 값이 변경되었을 때
 emailInput1.addEventListener("keyup", function() {
 	availableEmail = false;
@@ -265,15 +207,52 @@ emailInput1.addEventListener("keyup", function() {
 	
 	enableModifyButton();
 });
-
+<%-- 별명 중복확인 관련 코드 --%>
+let nickNameInput1 = document.querySelector("#nickNameInput1");
+let nickNameText1 = document.querySelector("#nickNameText1");
+let nickNameButton1 = document.querySelector("#nickNameButton1");
+//별명 중복확인 버튼 클릭하면
+nickNameButton1.addEventListener("click", function() {
+	availableNickName = false;
+	
+	const nickName = nickNameInput1.value;
+	
+	fetch(`\${ctx}/member/existNickName/\${nickName}`)
+		.then(res => res.json())
+		.then(data => {
+			nickNameText1.innerText = data.message;
+			
+			if (data.status == "not exist") {
+				availableNickName = true;
+			}
+			enableModifyButton();
+		});
+});
+//닉네임 input의 값이 변경되었을 때
+nickNameInput1.addEventListener("keyup", function() {
+	availableNickName = false;
+	
+	const oldValue = nickNameInput1.dataset.oldValue;
+	const newValue = nickNameInput1.value;
+	if (oldValue == newValue) {
+		// 기존 닉네임과 같으면 아무일도 일어나지 않음
+		nickNameText1.innerText = "";
+		nickNameButton1.setAttribute("disabled", "disabled");
+		availableNickName = true;
+	} else {
+		// 기존 이메일과 다르면 중복체크 요청
+		nickNameText1.innerText = "별명 중복확인을 해주세요.";
+		nickNameButton1.removeAttribute("disabled");
+	}
+	
+	enableModifyButton();
+});
 <%-- 암호 입력 일치하는지 확인 --%>
 const passwordInput1 = document.querySelector("#passwordInput1");
 const passwordInput2 = document.querySelector("#passwordInput2");
 const passwordText1 = document.querySelector("#passwordText1");
-
 passwordInput1.addEventListener("keyup", matchPassword);
 passwordInput2.addEventListener("keyup", matchPassword);
-
 function matchPassword() {
 	availablePassword = false;
 	if (passwordInput1.value == passwordInput2.value) {
@@ -284,7 +263,6 @@ function matchPassword() {
 	}
 	enableModifyButton();
 }
-
 <%-- 탈퇴 모달 확인 버튼 눌렀을 때 --%>
 document.querySelector("#modalConfirmButton2").addEventListener("click", function() {
 	const form = document.forms.form2;
@@ -297,7 +275,6 @@ document.querySelector("#modalConfirmButton2").addEventListener("click", functio
 	// form을 submit
 	form.submit();
 });
-
 <%-- 수정 모달 확인 버튼 눌렀을 때 --%>
 document.querySelector("#modalConfirmButton").addEventListener("click", function() {
 	const form = document.forms.form1;
@@ -313,13 +290,3 @@ document.querySelector("#modalConfirmButton").addEventListener("click", function
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
