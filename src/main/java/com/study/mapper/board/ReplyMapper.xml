@@ -59,4 +59,18 @@
 	INSERT INTO Reply (boardId, content, writer)
 	VALUES (#{boardId}, #{content}, #{writer})
 	</insert>
+	
+	<delete id="deleteByMemeberId">
+	DELETE FROM Reply
+	WHERE writer = #{id}
+	</delete>
 </mapper>
+
+
+
+
+
+
+
+
+

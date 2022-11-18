@@ -158,6 +158,7 @@ public class BoardService {
 		
 		if (fileNames != null) {
 			for (String fileName : fileNames) {
+				// s3 저장소 지우기
 				deleteFile(id, fileName);
 				
 			}
@@ -172,6 +173,9 @@ public class BoardService {
 		replyMapper.deleteByBoardId(id);
 		
 //		int a = 3 / 0; // runtime exception
+		
+		// 좋아요 지우기
+		boardMapper.deleteLikeByBoardId(id);
 		
 		// 게시물 지우기
 		return boardMapper.delete(id);

@@ -3,6 +3,7 @@ package com.study.security;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -20,19 +21,25 @@ public class CustomUserDetailsService implements UserDetailsService {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
+	// 실제 db 데이터
 	@Autowired
 	private MemberMapper mapper;
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
+		//                 mapper가 실제 db데이터의 유저 네임을 가져옴
 		MemberDto member = mapper.selectById(username);
 		
 		if (member == null) {
 			return null;
 		}
 		
-		User user = new User(member.getId(), member.getPassword(), List.of());
+		// 한멤버가 여러 권한을 가질 수 있음
+		List<SimpleGrantedAuthority> auauthorityList = null;
+		
+		//                                                        List.of는 권한(authorization) > auauthorityList로 교체
+		User user = new User(member.getId(), member.getPassword(), auauthorityList);
 		
 		return user;
 	}

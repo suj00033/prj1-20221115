@@ -49,19 +49,31 @@
 	
 	</update>
 
-	<select id="selectById" resultType="com.study.domain.member.MemberDto">
+	<!-- List로 받아야하므로 Map으로 변경 -->
+	<select id="selectById" resultMap="memberMap">
 	SELECT 
 		id,
 		nickName,
 		password,
 		email,
-		inserted
+		inserted,
+		a.auth
 	FROM
-		Member
+		Member m LEFT JOIN Authority a ON m.id = a.memberId
 	WHERE
 		id = #{id}
-	
 	</select>
+	
+	<resultMap type="com.study.domain.member.MemberDto" id="memberMap">
+		<id column="id" property="id"></id>
+		<result column="nickName" property="nickName"></result>
+		<result column="password" property="password"></result>
+		<result column="email" property="email"></result>
+		<result column="inserted" property="inserted"></result>
+		<collection property="auth" ofType="string">
+			<result column="auth" property="auth"/>
+		</collection>
+	</resultMap>
 
 	<select id="selectAll" resultType="com.study.domain.member.MemberDto">
 	SELECT 

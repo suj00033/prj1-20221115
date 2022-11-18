@@ -1,6 +1,7 @@
 package com.study.domain.member;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import lombok.Data;
 
@@ -12,4 +13,7 @@ public class MemberDto {
 	private String password;
 	
 	private LocalDateTime inserted;
+	
+	// 권한 리스트
+	private List<String> auth;
 }
