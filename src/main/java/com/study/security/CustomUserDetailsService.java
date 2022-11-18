@@ -1,5 +1,6 @@
 package com.study.security;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,10 +37,16 @@ public class CustomUserDetailsService implements UserDetailsService {
 		}
 		
 		// 한멤버가 여러 권한을 가질 수 있음
-		List<SimpleGrantedAuthority> auauthorityList = null;
+		List<SimpleGrantedAuthority> authorityList = new ArrayList<>();
+		
+		if (member.getAuth() != null) {
+			for (String auth : member.getAuth()) {
+				authorityList.add(new SimpleGrantedAuthority(auth));
+			}
+		}
 		
 		//                                                        List.of는 권한(authorization) > auauthorityList로 교체
-		User user = new User(member.getId(), member.getPassword(), auauthorityList);
+		User user = new User(member.getId(), member.getPassword(), authorityList);
 		
 		return user;
 	}
