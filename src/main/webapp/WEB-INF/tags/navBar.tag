@@ -44,7 +44,7 @@
 <nav class="navbar navbar-expand-md bg-light mb-3">
   <div class="container-md">
     <a class="navbar-brand" href="${listLink }">
-    	<c:url value="/content/rocket-solid.svg" var="logoLink"></c:url>
+    	<c:url value="/content/otter-solid.svg" var="logoLink"></c:url>
     	<img alt="" src="${logoLink }" style="height: 40px">
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">

@@ -285,9 +285,14 @@ function listReply() {
 					</button>
 				</div>
 			`
+			// 댓글 보이기
 			const replyDiv = `
 				<div class="list-group-item d-flex">
 					<div class="me-auto">
+						<h5>
+							<i class="fa-solid fa-circle-user"></i>
+							\${item.writer}
+						</h5>
 						<div>
 							\${item.content}
 						</div>
