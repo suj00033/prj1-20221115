@@ -117,13 +117,17 @@ public class MemberController {
 		model.addAttribute("memberList", service.list());
 	}
 	
-	@GetMapping({"info", "modify"})
+	@GetMapping({ "info", "modify" })
+	// 로그인한 계정으로 자기 정보만 볼수있는 동시에 관리자는 모두 볼수있게(수정은 x)
+	@PreAuthorize("hasAuthority('admin') or (authentication.name == #id)")
 	public void info(String id, Model model) {
-		
+
 		model.addAttribute("member", service.getById(id));
 	}
 	
 	@PostMapping("modify")
+	// 로그인한 계정으로 자기 정보만 볼수있도록
+	@PreAuthorize("authentication.name == #member.id")
 	public String modify(MemberDto member, String oldPassword, RedirectAttributes rttr) {
 		// 회원 정보 수정 시 전 암호를 입력하여 수정하기
 		MemberDto oldMember = service.getById(member.getId());

@@ -13,7 +13,7 @@
 <%-- spring security expressions 검색해서 참고, 책p673, 674 --%>
 <sec:authorize access="hasAuthority('admin')" var="adminLogin"/>
 	<c:if test="${adminLogin }">
-		<h1 style="color:steelblue;">관리자 계정</h1>
+		<p style="color:steelblue;">관리자 계정</p>
 	</c:if>
 
 <sec:authorize access="isAuthenticated()" var="loggedIn"/>
@@ -33,6 +33,13 @@
 <c:url value="/member/list" var="memberListLink" />
 <c:url value="/member/login" var="loginLink"></c:url>
 <c:url value="/member/logout" var="logoutLink"></c:url>
+
+<!-- 로그인한 username으로 자기 정보만 보도록 -->
+<sec:authentication property="name" var="username"/>
+<c:url value="/member/info" var="memberInfoLink" >
+	<c:param name="id" value="${username }" />
+</c:url>
+
 
 <nav class="navbar navbar-expand-md bg-light mb-3">
   <div class="container-md">
@@ -71,8 +78,11 @@
 	        </li>
         </c:if>   
         
-        <%-- 로그인 되어있을때만 로그아웃 보이도록 --%>
+        <%-- 로그인 되어있을때만 로그아웃 보이도록, 자기 자신 회원정보만 볼수있도록 --%>
         <c:if test="${loggedIn }">
+	        <li class="nav-item">
+	        	<a href="${memberInfoLink }" class="nav-link">회원정보</a>
+	        </li>
 	        <li class="nav-item">
 	        	<a href="${logoutLink }" class="nav-link">로그아웃</a>
 	        </li>
