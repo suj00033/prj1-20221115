@@ -11,6 +11,11 @@
 
 <%-- authorize tag --%>
 <%-- spring security expressions 검색해서 참고, 책p673, 674 --%>
+<sec:authorize access="hasAuthority('admin')" var="adminLogin"/>
+	<c:if test="${adminLogin }">
+		<h1 style="color:steelblue;">관리자 계정</h1>
+	</c:if>
+
 <sec:authorize access="isAuthenticated()" var="loggedIn"/>
 	<%-- 로그인되었을때 보임 --%>
 	<c:if test="${loggedIn }">
@@ -46,11 +51,14 @@
 	        <li class="nav-item">
 	          <a class="nav-link ${active eq 'register' ? 'active' : '' }" href="${registerLink }">작성</a>
 	        </li>
-	        
+        </c:if>
+
+		<%-- <sec:authorize access="hasAuthority('admin')" var="adminLogin"/> 바로 써도됨 --%>
+		<c:if test="${adminLogin }">	        
 	        <li class="nav-item">
 	          <a class="nav-link ${active eq 'memberList' ? 'active' : '' }" href="${memberListLink }">회원목록</a>
 	        </li>
-        </c:if>
+	    </c:if>
         
         <%-- 로그아웃 상태에서만 회원가입 메뉴가 보이도록 --%>
        <c:if test="${not loggedIn }">
