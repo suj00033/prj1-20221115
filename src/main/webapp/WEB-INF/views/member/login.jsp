@@ -19,6 +19,8 @@
 		id <input type="text" name="username"> <br>
 		pw <input type="text" name="password"> <br>
 		
+		<input type="checkbox" name="remember-me"> remember me <br>
+		
 		<%-- <sec:csrfInput/> 원래 해야하지만 너무 복잡해서 이 과정은 생략 --%>
 		<input type="submit" value="로그인">
 	</form>

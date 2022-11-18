@@ -57,6 +57,7 @@ public class CustomConfig {
 		// 멤버 로그아웃                       
 		http.logout().logoutUrl("/member/logout");
 		// .logoutSuccessUrl("/board/list");를 붙이면 로그아웃 이후에는 게시판 목록으로 가겠다
+		http.rememberMe();
 		http.csrf().disable();
 			
 		return http.build();
