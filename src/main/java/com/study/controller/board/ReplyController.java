@@ -16,11 +16,15 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.study.domain.board.ReplyDto;
 import com.study.service.board.ReplyService;
 
-@Controller
+/*@Controller
+@ResponseBody
+를 합친 어노테이션*/
+@RestController
 @RequestMapping("reply")
 public class ReplyController {
 	
@@ -29,7 +33,6 @@ public class ReplyController {
 	
 	// 댓글 수정하기
 	@PutMapping("modify")
-	@ResponseBody
 	// 권한                                                      argument쓸때는 #
 	@PreAuthorize("@replySecurity.checkWriter(authentication.name, #reply.id)")
 	public Map<String, Object> modify(@RequestBody ReplyDto reply) {
@@ -48,14 +51,12 @@ public class ReplyController {
 	
 	// 댓글 가져오기	
 	@GetMapping("get/{id}")
-	@ResponseBody
 	public ReplyDto get(@PathVariable int id) {
 		return service.getById(id);
 	}
 	
 	// 댓글 삭제
 	@DeleteMapping("remove/{id}")
-	@ResponseBody
 	@PreAuthorize("@replySecurity.checkWriter(authentication.name, #id)")
 	public Map<String, Object> remove(@PathVariable int id) {
 		Map<String, Object> map = new HashMap<>();
@@ -72,7 +73,6 @@ public class ReplyController {
 	
 	// 댓글 목록 가져오는 메소드
 	@GetMapping("list/{boardId}")
-	@ResponseBody
 	public List<ReplyDto> list(@PathVariable int boardId, Authentication authentication) {
 		
 		String username = "";
@@ -86,7 +86,6 @@ public class ReplyController {
 	}
 
 	@PostMapping("add")
-	@ResponseBody
 	// 로그인한 사람들만 댓글을 달수 있도록
 	@PreAuthorize("isAuthenticated()")
 	public Map<String, Object> add(@RequestBody ReplyDto reply, Authentication authentication) {
