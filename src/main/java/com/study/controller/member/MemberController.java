@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -110,6 +111,8 @@ public class MemberController {
 	}
 	
 	@GetMapping("list")
+	// 관리자만 회원목록 볼수있도록 설정, admin이라는 권한이 있는가
+	@PreAuthorize("hasAuthority('admin')")
 	public void list(Model model) {
 		model.addAttribute("memberList", service.list());
 	}
