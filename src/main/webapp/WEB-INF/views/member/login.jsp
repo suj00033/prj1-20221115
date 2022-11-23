@@ -16,21 +16,20 @@
 
 	<div class="container-md">
 		<div class="row justify-content-center">
-			<div class="col-5">
+			<div class="col-12 col-md-5">
 				<h1>로그인</h1>
 				<form method="post">
 				
 					<div class="input-group mb-3">
 						<span class="input-group-text">
-							<i class="fa-solid fa-user"></i>
+							<i class="fa-solid fa-user fa-fw"></i>
 						</span>
 						<input type="text" name="username" class="form-control" placeholder="아이디">
-					
 					</div>
 					
 					<div class="input-group mb-3">
 						<span class="input-group-text">
-							<i class="fa-solid fa-key"></i>
+							<i class="fa-solid fa-key fa-fw"></i>
 						</span>
 						<input type="password" name="password" class="form-control" placeholder="암호">
 					</div>
